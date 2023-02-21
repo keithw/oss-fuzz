@@ -102,6 +102,7 @@ def get_frame_info(crash_info):
 
 def get_sarif_data(crash_info):
   frame_info = get_frame_info(crash_info)
+  print('frameinfo', frame_info)
   uri = redact_src_path(frame_info[0])
 
   result = {
