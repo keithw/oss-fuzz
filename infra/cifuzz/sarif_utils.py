@@ -78,7 +78,7 @@ def redact_src_path(src_path):
   if src_path.startswith(SRC_ROOT):
     src_path = src_path[len(SRC_ROOT):]
 
-  src_path = os.sep.join(path.split(os.sep)[1:])
+  src_path = os.sep.join(src_path.split(os.sep)[1:])
   return src_path
 
 
