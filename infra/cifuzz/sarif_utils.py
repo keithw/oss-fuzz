@@ -16,6 +16,8 @@ import copy
 import os
 import json
 
+from clusterfuzz import stacktraces
+
 
 BUG_ID = 'bug'
 # RULES = [
@@ -82,14 +84,12 @@ def get_frame(crash_info):
   if not crash_info.crash_state:
     return
   state = crash_info.crash_state.split('\n')[0]
-  frames = crash_info.frames[0]
-  if not frames:
-    return
 
   print('state', state, crash_info.crash_state)
-  for frame in frames:
-    if frame.function_name.startswith(state): # !!! buggy
-      return frame
+  for crash_frames in crash_info.frames:
+    for frame in crash_frames:
+      if frame.function_name.startswith(state): # !!! buggy
+        return frame
   return None
 
 
@@ -100,7 +100,13 @@ def get_frame_info(crash_info):
   print(frame.filename, int(frame.fileline or 1))
   return frame.filename, int(frame.fileline or 1)
 
-def get_sarif_data(crash_info):
+def get_sarif_data(stacktrace, target_path):
+  fuzz_target = os.path.basename(target_path)
+  stack_parser = stacktraces.StackParser(fuzz_target=fuzz_target,
+                                         symbolized=True,
+                                         detect_ooms_and_hangs=True,
+                                         include_ubsan=True)
+  crash_info = stack_parser.parse(stacktrace)
   frame_info = get_frame_info(crash_info)
   print('frameinfo', frame_info, crash_info.frames[0][0], crash_info.frames)
   uri = redact_src_path(frame_info[0])
@@ -132,8 +138,8 @@ def get_sarif_data(crash_info):
   return data
 
 
-def write_crash_to_sarif(crash_info, workspace):
-  data = get_sarif_data(crash_info)
+def write_stacktrace_to_sarif(stacktrace, target_path, workspace):
+  data = get_sarif_data(stacktrace, target_path)
   workspace.initialize_dir(workspace.sarif)
   with open(os.path.join(workspace.sarif, 'results.sarif'), 'w') as file_handle:
     file_handle.write(json.dumps(data))

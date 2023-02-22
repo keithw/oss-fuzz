@@ -18,8 +18,6 @@ import os
 import sys
 import time
 
-from clusterfuzz import stacktraces
-
 import clusterfuzz_deployment
 import fuzz_target
 import generate_coverage_report
@@ -154,13 +152,7 @@ class BaseFuzzTargetRunner:
 
 
 def write_fuzz_result_to_sarif(result, target_path, workspace):
-  fuzz_target = os.path.basename(target_path)
-  stack_parser = stacktraces.StackParser(fuzz_target=fuzz_target,
-                                         symbolized=True,
-                                         detect_ooms_and_hangs=True,
-                                         include_ubsan=True)
-  crash_info = stack_parser.parse(result.stacktrace)
-  sarif_utils.write_crash_to_sarif(crash_info, workspace)
+  sarif_utils.write_stacktrace_to_sarif(result.stacktrace, target_path, workspace)
 
 class PruneTargetRunner(BaseFuzzTargetRunner):
   """Runner that prunes corpora."""

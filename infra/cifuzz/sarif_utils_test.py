@@ -23,7 +23,7 @@ TEST_DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                               'test_data')
 
 
-class GetSarifData(unittest.TestCase):
+class GetSarifDataTest(unittest.TestCase):
   def test_get_sarif_data(self):
     with open(os.path.join(TEST_DATA_PATH, 'example_crash_fuzzer_output.txt')) as fp:
       fuzzer_output = fp.read()
@@ -38,3 +38,11 @@ class GetSarifData(unittest.TestCase):
       import json
       fp.write(json.dumps(data))
       # import pdb; pdb.set_trace()
+
+
+class GetSarifDataTest(unittest.TestCase):
+  def test_write_stacktrace_to_sarif(self):
+    d=open('/tmp/stack').read()
+    import pdb; pdb.set_trace()
+    sarif_utils.get_sarif_data(d, '/do_stuff_fuzzer')
+    pass
