@@ -49,7 +49,7 @@ RULES = {
             {
               'id': 'no-crashes',
               'shortDescription': {
-                'text': 'don\'t crash'
+                'text': 'Don\'t crash'
               },
               'helpUri': 'https://eslint.org/docs/rules/no-unused-vars',
               'properties': {
@@ -59,13 +59,6 @@ RULES = {
           ]
         }
       },
-      'artifacts': [
-        {
-          'location': {
-            'uri': 'file:///C:/dev/sarif/sarif-tutorials/samples/Introduction/simple-example.js'
-          }
-        }
-      ],
       'results': [
       ]
     }
